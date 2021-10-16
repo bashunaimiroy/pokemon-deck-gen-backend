@@ -38,3 +38,8 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+# Pokemon TCG SDK for Ruby.
+# Docs: https://docs.pokemontcg.io/sdks/ruby
+# Repo: https://github.com/PokemonTCG/pokemon-tcg-sdk-ruby
+gem 'pokemon_tcg_sdk'
