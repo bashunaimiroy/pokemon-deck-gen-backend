@@ -2,9 +2,14 @@ module API
     module V1
         class DecksController < ApplicationController
             def index
-                @decks = Deck.order("created_at DESC")
-                # TODO: add filtering order
-                render json: { status: 'SUCCESS', message: 'these are all of the decks', data: @decks }, status: :ok
+                @decks = Deck.where(nil)
+                @decks = @decks.filter_by_pokemon_type(params[:filter_by_pokemon_type]) if params[:filter_by_pokemon_type].present?
+                @decks = @decks.order("created_at DESC")
+
+                # TODO: Refactor to scale for further filtering types
+                message = params.has_key?(:filter_by_pokemon_type) ? "Decks, filtered by type: #{params[:filter_by_pokemon_type]}" : "All Decks"
+                # TODO: add Pagination
+                render json: { status: 'SUCCESS', message: message, data: @decks }, status: :ok
             end
 
             def show
