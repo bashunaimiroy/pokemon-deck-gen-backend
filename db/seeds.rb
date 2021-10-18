@@ -22,13 +22,16 @@ when 'development'
     "Psychic",
     "Water"
   ]
-
+  
   pokemon_types.each do |type| 
+    # create a deck for each type
     deck_of_type = Deck.create(pokemon_type: type)
-    energy_of_type = Card.create(name: "#{type} Energy", id: "#{type}-en")
-    pokemon_of_type = Card.create(name: "#{type}-type Pokemon", id: "#{type}-pk")
-    CardDeckInclusion.create(deck_id: deck_of_type.id, card_id: energy_of_type.id, quantity: 10 )
-    CardDeckInclusion.create(deck_id: deck_of_type.id, card_id: pokemon_of_type.id, quantity: 1 )
+    
+    # Create energy and pokemon cards for each type, and include them in the appropriate deck
+    energy_card_of_type = Card.create(name: "#{type} Energy", id: "#{type}-en")
+    pokemon_card_of_type = Card.create(name: "#{type}-type Pokemon", id: "#{type}-pk")
+    CardDeckInclusion.create(deck_id: deck_of_type.id, card_id: energy_card_of_type.id, quantity: 10 )
+    CardDeckInclusion.create(deck_id: deck_of_type.id, card_id: pokemon_card_of_type.id, quantity: 1 )
   end
   
 end
