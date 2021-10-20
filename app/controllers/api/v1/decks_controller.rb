@@ -20,7 +20,18 @@ module API
             def show
                 deck_id = params[:id]
                 @deck = Deck.find(deck_id)
-                render json: { status: 'SUCCESS', message: "here is deck ##{deck_id}", data: @deck }, status: :ok
+                # TODO: Determine why @deck.cards is not working-
+                # Unknown Column `cards`.`card_deck_inclusion.id`
+                # Seems to be a problem with association in Card model
+                @cards = @deck.card_deck_inclusions.map {|cdi| Card.find(cdi.card_id)}
+                render json: { 
+                    status: 'SUCCESS', 
+                    message: "here is deck ##{deck_id}", 
+                    data: { 
+                        deck: @deck, 
+                        cards: @cards
+                    }
+                }, status: :ok
             end
 
             def create
