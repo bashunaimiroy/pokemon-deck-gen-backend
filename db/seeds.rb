@@ -28,8 +28,8 @@ when 'development'
     deck_of_type = Deck.create(pokemon_type: type)
     
     # Create energy and pokemon cards for each type, and include them in the appropriate deck
-    energy_card_of_type = Card.create(name: "#{type} Energy", id: "#{type}-en")
-    pokemon_card_of_type = Card.create(name: "#{type}-type Pokemon", id: "#{type}-pk")
+    energy_card_of_type = Card.create(name: "#{type} Energy", id: "#{type}-en", supertype: "Energy")
+    pokemon_card_of_type = Card.create(name: "#{type}-type Pokemon", id: "#{type}-pk", supertype: "Pokemon")
     CardDeckInclusion.create(deck_id: deck_of_type.id, card_id: energy_card_of_type.id, quantity: 10 )
     CardDeckInclusion.create(deck_id: deck_of_type.id, card_id: pokemon_card_of_type.id, quantity: 1 )
   end
