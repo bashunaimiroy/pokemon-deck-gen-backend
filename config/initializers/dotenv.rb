@@ -1,0 +1,1 @@
+Dotenv.require_keys('POKEMON_TCG_API_KEY')
