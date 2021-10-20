@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2021_10_17_005127) do
 
-  create_table "card_deck_inclusions", id: false, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "card_deck_inclusions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "card_id", null: false
     t.bigint "deck_id", null: false
     t.integer "quantity"
