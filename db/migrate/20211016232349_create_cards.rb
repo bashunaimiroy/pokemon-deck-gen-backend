@@ -3,7 +3,9 @@ class CreateCards < ActiveRecord::Migration[6.1]
     create_table :cards, id: false do |t|
       t.string :id, primary_key: true # uses the Card ID from the Pokemon TCG database, not default auto-incremented integer.
       t.string :name
-      t.timestamps
+      t.string :supertype
+      t.datetime :created_at, default: -> { "CURRENT_TIMESTAMP" }
+      t.datetime :updated_at, default: -> { "CURRENT_TIMESTAMP" }
     end
   end
 end
