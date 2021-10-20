@@ -18,14 +18,15 @@ ActiveRecord::Schema.define(version: 2021_10_17_005127) do
     t.integer "quantity"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["card_id"], name: "fk_rails_f4747e628e"
+    t.index ["card_id"], name: "index_card_deck_inclusions_on_card_id"
     t.index ["deck_id"], name: "index_card_deck_inclusions_on_deck_id"
   end
 
   create_table "cards", id: :string, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.string "supertype"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }
   end
 
   create_table "decks", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
