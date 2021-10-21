@@ -3,7 +3,7 @@ module API
         class DecksController < ApplicationController
             def index
                 @decks = Deck.where(nil)
-                @decks = @decks.filter_by_pokemon_type(params[:filter_by_pokemon_type]) if params[:filter_by_pokemon_type].present?
+                @decks = @decks.filter_by_pokemon_type(index_params[:filter_by_pokemon_type]) if index_params[:filter_by_pokemon_type].present?
                 @decks = @decks.order("created_at DESC")
 
                 # TODO: Refactor to scale for further filtering types
@@ -121,7 +121,8 @@ module API
             end
             
             def index_params
-                params.permit(:filter_by)
+                # TODO: :format should not be here- correct on frontend
+                params.permit(:format, :filter_by_pokemon_type)
             end
 
             def creation_params
