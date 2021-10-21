@@ -75,6 +75,12 @@ module API
                 } 
                 # TODO: Check if upsertion is needed- limit to once a day/week/month
                 Card.upsert_all(card_data_to_upsert)
+                # Append Set Name to the Energy Card names, to distinguish them
+                # E.g. "Grass Energy (XY)" vs "Grass Energy (Sword and Shield)"
+                energy_cards = energy_cards.map { |card| 
+                    card.name = "#{card.name} (#{card.set.name})"
+                    card
+                }
 
                 # Determine number of trainer cards to add to deck
                 number_of_trainer_cards_in_deck = Deck::CONSTRAINTS[:deck_size] - Deck::CONSTRAINTS[:energy_card_count] - number_of_pokemon
