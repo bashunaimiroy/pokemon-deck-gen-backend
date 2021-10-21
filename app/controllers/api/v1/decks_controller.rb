@@ -65,21 +65,23 @@ module API
                 
                 # insert or update Card Records, referenced via inclusions
                 cards_retrieved = pokemon_cards + energy_cards + trainer_cards
-                card_data_to_upsert = cards_retrieved.map{ |card| {
-                    id: card.id, 
-                    name: card.name, 
-                    supertype: card.supertype,
-                    created_at: Time.now 
+                card_data_to_upsert = cards_retrieved.map { |card| 
+                    {
+                        id: card.id, 
+                        name: card.name, 
+                        supertype: card.supertype,
+                        created_at: Time.now 
                     }
                 } 
                 # TODO: Check if upsertion is needed- limit to once a day/week/month
                 Card.upsert_all(card_data_to_upsert)
 
+                # Determine number of trainer cards to add to deck
                 number_of_trainer_cards_in_deck = Deck::CONSTRAINTS[:deck_size] - Deck::CONSTRAINTS[:energy_card_count] - number_of_pokemon
                 
-                # Only take first of each pokemon/trainer cards with that name
-                unique_pokemon = pokemon_cards.uniq{ |card| card.name }
-                unique_trainers = trainer_cards.uniq{ |card| card.name }
+                # Filter duplicates, only take first of each pokemon/trainer cards with same name
+                unique_pokemon = pokemon_cards.uniq { |card| card.name }
+                unique_trainers = trainer_cards.uniq { |card| card.name }
                 
                 # TODO: Allow different pokemon/trainer cards of same name, up to 4
                 # possibly by adding Card Name to deck cards, and to Card_Deck_inclusion model
@@ -87,11 +89,11 @@ module API
                 # Deck Cards will be a hash where key is Card ID, and value is Quantity in Deck.
                 
                 deck_cards = {}
-                pokemon_cards = get_random_cards_from_set(unique_pokemon, number_of_pokemon)
-                energy_cards = get_random_cards_from_set(energy_cards, Deck::CONSTRAINTS[:energy_card_count], Deck::CONSTRAINTS[:energy_card_count])
-                trainer_cards = get_random_cards_from_set(unique_trainers, number_of_trainer_cards_in_deck)
+                random_pokemon_cards = get_random_cards_from_set(unique_pokemon, number_of_pokemon)
+                random_energy_cards = get_random_cards_from_set(energy_cards, Deck::CONSTRAINTS[:energy_card_count], Deck::CONSTRAINTS[:energy_card_count])
+                random_trainer_cards = get_random_cards_from_set(unique_trainers, number_of_trainer_cards_in_deck)
                 
-                deck_cards.merge!(pokemon_cards, energy_cards, trainer_cards)
+                deck_cards.merge!(random_pokemon_cards, random_energy_cards, random_trainer_cards)
 
                 return deck_cards
             end
