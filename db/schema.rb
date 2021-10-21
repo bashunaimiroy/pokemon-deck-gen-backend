@@ -13,20 +13,14 @@
 ActiveRecord::Schema.define(version: 2021_10_17_005127) do
 
   create_table "card_deck_inclusions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "card_id", null: false
     t.bigint "deck_id", null: false
+    t.string "card_id"
+    t.string "card_name"
+    t.string "card_supertype"
     t.integer "quantity"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["card_id"], name: "index_card_deck_inclusions_on_card_id"
     t.index ["deck_id"], name: "index_card_deck_inclusions_on_deck_id"
-  end
-
-  create_table "cards", id: :string, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "name"
-    t.string "supertype"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
-    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }
   end
 
   create_table "decks", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -35,6 +29,5 @@ ActiveRecord::Schema.define(version: 2021_10_17_005127) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  add_foreign_key "card_deck_inclusions", "cards"
   add_foreign_key "card_deck_inclusions", "decks"
 end

@@ -20,29 +20,31 @@ module API
             def show
                 deck_id = params[:id]
                 @deck = Deck.find(deck_id)
-                # TODO: Determine why @deck.cards is not working-
-                # Unknown Column `cards`.`card_deck_inclusion.id`
-                # Seems to be a problem with association in Card model
-                @cards = @deck.card_deck_inclusions.map {|cdi| Card.find(cdi.card_id)}
+                @inclusions = @deck.card_deck_inclusions
                 render json: { 
                     status: 'SUCCESS', 
                     message: "here is deck ##{deck_id}", 
                     deck: @deck, 
-                    cards: @cards
+                    inclusions: @inclusions
                 }, status: :ok
             end
 
             def create
                 #  * redirect user to deck details page?
-                cards_in_deck = get_randomised_cards(params[:pokemon_type], params[:number_of_pokemon].to_i)
+                cards_to_include = get_randomised_cards(params[:pokemon_type], params[:number_of_pokemon].to_i)
 
                 @deck = Deck.new({pokemon_type: params[:pokemon_type]})
                 
-
                 if @deck.save
-                    cards_in_deck.each do |card_id, quantity|
+                    cards_to_include.each do |card_id, inclusion|
                         # create a relationship between cards and deck
-                        CardDeckInclusion.create!({ card_id: card_id, deck_id: @deck.id, quantity: quantity })
+                        CardDeckInclusion.create!({ 
+                            deck_id: @deck.id,
+                            card_id: inclusion[:card].id, 
+                            card_name: inclusion[:card].name,
+                            card_supertype: inclusion[:card].supertype,
+                            quantity: inclusion[:quantity], 
+                        })
                     end
                     render json: { 
                         status: "SUCCESS", 
@@ -58,23 +60,10 @@ module API
 
             def get_randomised_cards(type, number_of_pokemon)
                 #  Get random cards
-                # TODO: use existing Card Records to optimise; skip repetitive API calls
                 pokemon_cards = Pokemon::Card.where(q: "types:#{type} supertype:Pokemon")
                 energy_cards = Pokemon::Card.where(q: "name:\"#{type} Energy\" supertype:Energy")
                 trainer_cards = Pokemon::Card.where(q:"supertype:Trainer")
                 
-                # insert or update Card Records, referenced via inclusions
-                cards_retrieved = pokemon_cards + energy_cards + trainer_cards
-                card_data_to_upsert = cards_retrieved.map { |card| 
-                    {
-                        id: card.id, 
-                        name: card.name, 
-                        supertype: card.supertype,
-                        created_at: Time.now 
-                    }
-                } 
-                # TODO: Check if upsertion is needed- limit to once a day/week/month
-                Card.upsert_all(card_data_to_upsert)
                 # Append Set Name to the Energy Card names, to distinguish them
                 # E.g. "Grass Energy (XY)" vs "Grass Energy (Sword and Shield)"
                 energy_cards = energy_cards.map { |card| 
