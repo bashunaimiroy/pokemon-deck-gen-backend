@@ -12,7 +12,7 @@ module API
                 render json: { 
                     status: 'SUCCESS', 
                     message: message, 
-                    data: {decks: @decks}
+                    decks: @decks
                 }, 
                 status: :ok
             end
@@ -27,10 +27,8 @@ module API
                 render json: { 
                     status: 'SUCCESS', 
                     message: "here is deck ##{deck_id}", 
-                    data: { 
-                        deck: @deck, 
-                        cards: @cards
-                    }
+                    deck: @deck, 
+                    cards: @cards
                 }, status: :ok
             end
 
@@ -46,9 +44,13 @@ module API
                         # create a relationship between cards and deck
                         CardDeckInclusion.create!({ card_id: card_id, deck_id: @deck.id, quantity: quantity })
                     end
-                    render json: { status: "SUCCESS", message: "Created a deck of type #{params[:pokemon_type]}", data: @deck }, status: :ok
+                    render json: { 
+                        status: "SUCCESS", 
+                        message: "Created a deck of type #{params[:pokemon_type]}", 
+                        deck: @deck 
+                    }, status: :ok
                 else
-                    render json: { status: "ERROR", message: "Was unable to create deck", data: @deck.errors }, status: :unprocessable_entity
+                    render json: { status: "ERROR", message: "Was unable to create deck", errors: @deck.errors }, status: :unprocessable_entity
                 end 
             end
             

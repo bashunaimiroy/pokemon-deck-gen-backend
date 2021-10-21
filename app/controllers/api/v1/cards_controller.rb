@@ -4,10 +4,10 @@ module API
             def show
                 card_id = params[:id]
                 @card = Pokemon::Card.find(card_id)
-                render json: { 
+                render json: {
                     status: 'SUCCESS', 
                     message: "Card with ID #{card_id} found", 
-                    data: @card
+                    card: @card
                 }, status: :ok
             end
         end
