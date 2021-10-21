@@ -6,13 +6,13 @@
 #
 default: &default
   adapter: mysql2
-  password: <%= ENV["MYSQL_PASSWORD"] %>
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
 
 development:
   <<: *default
   username: root
+  password: <%= ENV["MYSQL_PASSWORD"] %>
   database: pokemon-deck-gen
 
 # Warning: The database defined as "test" will be erased and
@@ -24,5 +24,5 @@ test:
 
 production:
   <<: *default
-  username: <%= ENV["MYSQL_USERNAME"] %>
+  url: <%= ENV['DATABASE_URL'] %>
   database: pokemon-deck-gen
