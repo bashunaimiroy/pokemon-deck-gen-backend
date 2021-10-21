@@ -106,28 +106,29 @@ module API
 
             def get_random_cards_from_set(card_set, number_of_cards, max_quantity_per_card = 4)
                 
-                randomised_cards = {}
-                # Clone to avoid side effects from mutating card set
-                cards_input = card_set.clone
+                cards_output = {}
                 
-                # select random indices within the array of cards, and return elements at those indices.
-
+                # select random indices within the array of cards, and return the element at that index.
                 number_of_cards.times {
-                    card_to_add_index = rand(cards_input.size)
-                    card_to_add = cards_input[card_to_add_index]
-                    
-                    if randomised_cards.has_key?(card_to_add.id)
-                        randomised_cards[card_to_add.id] += 1
-                        # if we've already added the max quantity allowed for this card, make sure it's not randomly picked again.
-                        if randomised_cards[card_to_add.id] >= max_quantity_per_card
-                            cards_input = cards_input.reject.with_index{|v, i| i == card_to_add_index }
+                    card_found = false
+                    while (!card_found) do
+                        random_index = rand(card_set.size)
+                        card_to_add = card_set[random_index]
+                        
+                        # Insert card, or increment quantity.
+                        # If we've already added the max quantity allowed for this card, loop again with another random card.
+                        
+                        if !cards_output.has_key?(card_to_add.id)
+                            card_found = true
+                            cards_output[card_to_add.id] = {card: card_to_add, quantity: 1}
+                        elsif cards_output[card_to_add.id][:quantity] < max_quantity_per_card
+                            card_found = true
+                            cards_output[card_to_add.id][:quantity] += 1
                         end
-                    else
-                        randomised_cards[card_to_add.id] = 1
                     end
                 }
 
-                return randomised_cards
+                return cards_output
             end
             
             def index_params
