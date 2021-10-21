@@ -97,20 +97,22 @@ module API
             end
 
             def get_random_cards_from_set(card_set, number_of_cards, max_quantity_per_card = 4)
-                card_set_clone = card_set.clone
+                
                 randomised_cards = {}
+                # Clone to avoid side effects from mutating card set
+                cards_input = card_set.clone
                 
                 # select random indices within the array of cards, and return elements at those indices.
 
                 number_of_cards.times {
-                    card_to_add_index = rand(card_set_clone.size)
-                    card_to_add = card_set_clone[card_to_add_index]
+                    card_to_add_index = rand(cards_input.size)
+                    card_to_add = cards_input[card_to_add_index]
                     
                     if randomised_cards.has_key?(card_to_add.id)
                         randomised_cards[card_to_add.id] += 1
                         # if we've already added the max quantity allowed for this card, make sure it's not randomly picked again.
                         if randomised_cards[card_to_add.id] >= max_quantity_per_card
-                            card_set_clone = card_set_clone.reject.with_index{|v, i| i == card_to_add_index }
+                            cards_input = cards_input.reject.with_index{|v, i| i == card_to_add_index }
                         end
                     else
                         randomised_cards[card_to_add.id] = 1
