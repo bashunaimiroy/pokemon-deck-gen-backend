@@ -7,7 +7,7 @@ module API
                 @decks = @decks.order("created_at DESC")
 
                 # TODO: Refactor to scale for further filtering types
-                message = params.has_key?(:filter_by_pokemon_type) ? "Decks, filtered by type: #{params[:filter_by_pokemon_type]}" : "All Decks"
+                message = params.has_key?(:filter_by_pokemon_type) ? "Decks, filtered by type: #{index_params[:filter_by_pokemon_type]}" : "All Decks"
                 # TODO: add Pagination
                 render json: { 
                     status: 'SUCCESS', 
@@ -31,9 +31,9 @@ module API
 
             def create
                 #  * redirect user to deck details page?
-                cards_to_include = get_randomised_cards(params[:pokemon_type], params[:number_of_pokemon].to_i)
+                cards_to_include = get_randomised_cards(deck_creation_params[:pokemon_type], deck_creation_params[:number_of_pokemon].to_i)
 
-                @deck = Deck.new({pokemon_type: params[:pokemon_type]})
+                @deck = Deck.new({pokemon_type: deck_creation_params[:pokemon_type]})
                 
                 if @deck.save
                     cards_to_include.each do |card_id, inclusion|
@@ -48,7 +48,7 @@ module API
                     end
                     render json: { 
                         status: "SUCCESS", 
-                        message: "Created a deck of type #{params[:pokemon_type]}", 
+                        message: "Created a deck of type #{deck_creation_params[:pokemon_type]}", 
                         deck: @deck 
                     }, status: :ok
                 else
@@ -121,13 +121,13 @@ module API
             end
             
             def index_params
-                # TODO: :format should not be here- correct on frontend
+                # TODO: See if we can remove :format
                 params.permit(:format, :filter_by_pokemon_type)
             end
 
-            def creation_params
-                # TODO: figure out the correct way to handle and filter params
-                params.require(:deck).permit(:pokemon_type, :number_of_pokemon)
+            def deck_creation_params
+                # TODO: See if we can remove :format
+                params.permit(:format, :pokemon_type, :number_of_pokemon)
             end
         end
     end
